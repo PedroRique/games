@@ -7,11 +7,11 @@ $(document).ready(function(){
             var x = getPos(id);
             // var caixaX = $('#caixa').innerWidth();
             if(event.keyCode == 39 && x[0] < 480){
-                move(id, x[0] + 10, x[1]);
+                move(id, x[0] + 20, x[1]);
             }
     
-            if(event.keyCode == 37 && x[0] >= 10){
-                move(id, x[0] - 10, x[1]);
+            if(event.keyCode == 37 && x[0] >= 20){
+                move(id, x[0] - 20, x[1]);
             }
     
             if(event.keyCode == 38){
@@ -22,9 +22,24 @@ $(document).ready(function(){
                 move(id, x[0], x[1] + 30);
             }
     
-            verify();
+            verify(id, x);
         });
     });
+
+    // $('#caixa').on('keydown',function(event){
+    //     event.preventDefault();
+        
+    //     let c1 = getPos(1);
+    //     let c2 = getPos(2);
+
+    //     if(event.keyCode == 39 && c1[0] < 480){
+    //         move(1, c1[0] + 20, c1[1]);
+    //     }
+
+    //     if(event.keyCode == 37 && c2[0] >= 20){
+    //         move(2, c2[0] - 20, c2[1]);
+    //     }
+    // });
 });
 
 function move(id, x, y){
@@ -51,9 +66,17 @@ function getPos(id){
     return [x,y];
 }
 
-function verify(){
-    if(Math.abs(getPos(1)[0] - getPos(2)[0]) < 20){
+function verify(id, x){
+
+    let c1 = getPos(1);
+    let c2 = getPos(2);
+
+    if(Math.abs(c1[0] - c2[0]) < 20 && Math.abs(c1[1] - c2[1]) < 30){
         $('#caixa').css('background','#ffd4d4');
+        setTimeout(function(){
+            move(id, x[0], x[1]);
+            $('#caixa').css('background','#fbfbfb');
+        },100);
     }else{
         $('#caixa').css('background','#fbfbfb');
     }

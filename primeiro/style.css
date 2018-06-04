@@ -20,6 +20,17 @@ body{
     background: #fbfbfb;
 }
 
+#caixa:before {
+    content: '';
+    width: 1px;
+    height: 90px;
+    background: #e6e6e6;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -0.5px;
+}
+
 .char {
     width: 20px;
     height: 30px;

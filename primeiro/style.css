@@ -42,12 +42,30 @@ body{
     justify-content: center;
     cursor: auto;
     position: absolute;
+    /* background: url("images/jogging.png") center center / contain no-repeat; */
+}
+
+#char1{
+    background: url("images/char1.png") center center / contain no-repeat;
+}
+
+#char2{
+    background: url("images/char2.png") center center / contain no-repeat;
 }
 
 .char span {
     color: white;
     cursor: default;
     font-family: monospace;
+    display: none;
+}
+
+.placar-box{
+    margin-top: 10px;
+}
+
+.placar{
+    font-size: 1.5em;
 }
 
 .versao{
@@ -84,4 +102,24 @@ body{
     background: #fbfbfb;
     padding: 15px;
     border: 1px solid #ededed;
+}
+
+.gameStatus-box{
+    display: none;
+}
+
+.gameStatus{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff99;
+    color: green;
+    font-size: 2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
 }

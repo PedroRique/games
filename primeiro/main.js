@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    // window.paused = false;
+
     $('#caixa').focus();
     // $('.char').each(function( index ) {
     //     var id = index + 1;
@@ -30,13 +32,13 @@ $(document).ready(function(){
     //     });
     // });
 
-    var fired = false;
+    var keyEnabledArray = Array(222).fill(true);
 
     $('#caixa').on('keydown',function(event){
         event.preventDefault();
         
-        if(!fired){
-            fired = true;
+        if(keyEnabledArray[event.keyCode] && !paused){
+            keyEnabledArray[event.keyCode] = false;
 
             let c1 = getPos(1);
             let c2 = getPos(2);
@@ -76,9 +78,11 @@ $(document).ready(function(){
     });
 
     $('#caixa').on('keyup', function(event){
-        fired = false;
+        keyEnabledArray[event.keyCode] = true;
     });
 });
+
+var paused = false;
 
 function reset(){
     move(1, 0, -30, true);
@@ -151,12 +155,26 @@ function marca(){
     }
 
     if (ganhador){
-        // alert(ganhador + 'ganhou');
-
         let prevScore = $(`#score${ganhador}`).text();
         $(`#score${ganhador}`).text(++prevScore);
 
-        setTimeout(reset, 0);
-        // reset();
+        paused = true;
+
+        $('.gameStatus span').text(`Jogador ${ganhador} ganhou!`);
+
+        $('.gameStatus-box').fadeIn();
+
+        setTimeout(function(){
+            reset();
+            paused = false;
+            $('.gameStatus-box').fadeOut();
+        }, 2000);
     }
+}
+
+function novoJogo(){
+    reset();
+    $('#score1').text(0);
+    $('#score2').text(0);
+    $('#caixa').focus();
 }

@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Meu Primeiro Jogo</title>
+    <title>Cooooorreeeee!</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" type="image/png" href="images/char1.png"/>
 </head>
 <body>
-    <h1>Meu Primeiro Jogo</h1>
+    <h1>Cooooorreeeee!</h1>
 
     <div id="caixa" tabindex="1">
         <div class="char" id="char1" style="transform: translateX(0px) translateY(-30px);"><span>1</span></div>
         <div class="char" id="char2" style="transform: translateX(480px) translateY(-30px);"><span>2</span></div>
+        <div class="gameStatus-box">
+            <div class="gameStatus">
+                <span>Jogador 0 Ganhou!</span>
+            </div>
+        </div>
     </div>
 
     
@@ -22,21 +28,24 @@
     </div>
 
     <div class="btns-box">
-        <button onclick="reset()" class="myBtn">Novo Jogo</button>
+        <button onclick="novoJogo()" class="myBtn">Novo Jogo</button>
         <button onclick="showTips()" class="myBtn">Instruções</button>
     </div>
 
 
     <div class="instructions-box">
         <p class="instructions">
-            <b>INSTRUÇÕES.</b><br><br>
-            Para ganhar você deve chegar ao outro lado!
+            <b>INSTRUÇÕES:</b><br><br>
+            Para ganhar você deve chegar ao outro lado!<br>
             Utilize (W/A/S/D) e (&UpArrow;/&LeftArrow;/&DownArrow;/&RightArrow;) para mover as caixas.<br><br>
-            Fique de olho no seu adversário e bloqueie o seu caminho utilizando sua própia caixa como barreira.
+            <b>DICAS:</b><br>
+            <b>1.</b> Não fique pressionando as teclas, nós desativamos de propósito, seria muito chato jogar sem a "corrida de cliques".<br><br>
+            <b>2.</b> Fique de olho no seu adversário e bloqueie o seu caminho utilizando sua própia caixa como barreira.
+
         </p>
     </div>
 
-    <span class="versao">v1.3.0</span>
+    <span class="versao">v1.3.1</span>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="main.js"></script>

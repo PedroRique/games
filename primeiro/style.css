@@ -44,10 +44,26 @@ body{
     position: absolute;
 }
 
+#char1{
+    background: red;
+}
+
+#char2{
+    background: blue;
+}
+
 .char span {
     color: white;
     cursor: default;
     font-family: monospace;
+}
+
+.placar-box{
+    margin-top: 10px;
+}
+
+.placar{
+    font-size: 1.5em;
 }
 
 .versao{

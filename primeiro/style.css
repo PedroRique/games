@@ -53,3 +53,35 @@ body{
 .versao{
     margin-top: 20px;
 }
+
+.btns-box{
+    display: flex;
+}
+
+.myBtn{
+    margin-top: 1.5em;
+    -webkit-appearance: none;
+    border: none;
+    font-weight: bold;
+    font-family: inherit;
+    padding: 7.5px 15px;
+    font-size: 1.2em;
+    margin-right: 1em;
+    text-transform: uppercase;
+}
+
+.myBtn:last-child{
+    margin-right: 0;
+}
+
+.instructions-box{
+    width: 500px;
+    text-align: center;
+    display: none;
+}
+
+.instructions{
+    background: #fbfbfb;
+    padding: 15px;
+    border: 1px solid #ededed;
+}

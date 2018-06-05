@@ -1,46 +1,88 @@
 $(document).ready(function(){
-    $('.char').each(function( index ) {
-        var id = index + 1;
-        $(`#char${id}`).on('keydown',function(event){
-            event.preventDefault();
+    // $('.char').each(function( index ) {
+    //     var id = index + 1;
+    //     $(`#char${id}`).on('keydown',function(event){
+    //         event.preventDefault();
     
-            var x = getPos(id);
-            // var caixaX = $('#caixa').innerWidth();
-            if(event.keyCode == 39 && x[0] < 480){
-                move(id, x[0] + 20, x[1]);
-            }
+    //         var x = getPos(id);
+    //         // var caixaX = $('#caixa').innerWidth();
+    //         if(event.keyCode == 39 && x[0] < 480){
+    //             move(id, x[0] + 20, x[1]);
+    //         }
     
-            if(event.keyCode == 37 && x[0] >= 20){
-                move(id, x[0] - 20, x[1]);
-            }
+    //         if(event.keyCode == 37 && x[0] >= 20){
+    //             move(id, x[0] - 20, x[1]);
+    //         }
     
-            if(event.keyCode == 38){
-                move(id, x[0], x[1] - 30);
-            }
+    //         if(event.keyCode == 38){
+    //             move(id, x[0], x[1] - 30);
+    //         }
     
-            if(event.keyCode == 40){
-                move(id, x[0], x[1] + 30);
-            }
+    //         if(event.keyCode == 40){
+    //             move(id, x[0], x[1] + 30);
+    //         }
     
-            verify(id, x);
-        });
-    });
+    //         verify(id, x);
 
-    // $('#caixa').on('keydown',function(event){
-    //     event.preventDefault();
-        
-    //     let c1 = getPos(1);
-    //     let c2 = getPos(2);
-
-    //     if(event.keyCode == 39 && c1[0] < 480){
-    //         move(1, c1[0] + 20, c1[1]);
-    //     }
-
-    //     if(event.keyCode == 37 && c2[0] >= 20){
-    //         move(2, c2[0] - 20, c2[1]);
-    //     }
+    //         console.log(event);
+    //     });
     // });
+
+    $('#caixa').on('keydown',function(event){
+        event.preventDefault();
+        
+        let c1 = getPos(1);
+        let c2 = getPos(2);
+
+        if(event.keyCode == 39 && c1[0] < 480){
+            move(1, c1[0] + 20, c1[1]);
+        }
+
+        if(event.keyCode == 37 && c1[0] >= 20){
+            move(1, c1[0] - 20, c1[1]);
+        }
+
+        if(event.keyCode == 38){
+            move(1, c1[0], c1[1] - 30);
+        }
+
+        if(event.keyCode == 40){
+            move(1, c1[0], c1[1] + 30);
+        }
+
+
+
+        if(event.keyCode == 68 && c2[0] < 480){
+            move(2, c2[0] + 20, c2[1]);
+        }
+
+        if(event.keyCode == 65 && c2[0] >= 20){
+            move(2, c2[0] - 20, c2[1]);
+        }
+
+        if(event.keyCode == 87){
+            move(2, c2[0], c2[1] - 30);
+        }
+
+        if(event.keyCode == 83){
+            move(2, c2[0], c2[1] + 30);
+        }
+
+        verify(1, c1);
+        verify(2, c2);
+
+        console.log(event.keyCode);
+    });
 });
+
+function reset(){
+    move(1, 0, -30);
+    move(2, 480, -30);
+}
+
+function showTips(){
+    $('.instructions-box').slideToggle();
+}
 
 function move(id, x, y){
     var char = $(`#char${id}`)[0];

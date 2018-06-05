@@ -7,14 +7,28 @@
 <body>
     <h1>Meu Primeiro Jogo</h1>
 
-    <div id="caixa">
-        <div class="char" id="char1" tabindex="1" style="transform: translateX(0px) translateY(-30px);"><span>1</span></div>
-        <div class="char" id="char2" tabindex="1" style="transform: translateX(480px) translateY(-30px);"><span>2</span></div>
+    <div id="caixa" tabindex="1">
+        <div class="char" id="char1" style="transform: translateX(0px) translateY(-30px);"><span>1</span></div>
+        <div class="char" id="char2" style="transform: translateX(480px) translateY(-30px);"><span>2</span></div>
     </div>
 
-    <span class="versao">v1.1.1</span>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="main.js"></script>
+    <div class="btns-box">
+        <button onclick="reset()" class="myBtn">Novo Jogo</button>
+        <button onclick="showTips()" class="myBtn">Instruções</button>
+    </div>
 
+    <div class="instructions-box">
+        <p class="instructions">
+            <b>INSTRUÇÕES.</b><br><br>
+            Para ganhar você deve chegar ao outro lado!
+            Utilize (W/A/S/D) e (&UpArrow;/&LeftArrow;/&DownArrow;/&RightArrow;) para mover as caixas.<br><br>
+            Fique de olho no seu adversário e bloqueie o seu caminho utilizando sua própia caixa como barreira.
+        </p>
+    </div>
+
+    <span class="versao">v1.2.0</span>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

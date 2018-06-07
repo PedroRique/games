@@ -1,36 +1,11 @@
 $(document).ready(function(){
 
-    // window.paused = false;
-
     $('#caixa').focus();
-    // $('.char').each(function( index ) {
-    //     var id = index + 1;
-    //     $(`#char${id}`).on('keydown',function(event){
-    //         event.preventDefault();
-    
-    //         var x = getPos(id);
-    //         // var caixaX = $('#caixa').innerWidth();
-    //         if(event.keyCode == 39 && x[0] < 480){
-    //             move(id, x[0] + 20, x[1]);
-    //         }
-    
-    //         if(event.keyCode == 37 && x[0] >= 20){
-    //             move(id, x[0] - 20, x[1]);
-    //         }
-    
-    //         if(event.keyCode == 38){
-    //             move(id, x[0], x[1] - 30);
-    //         }
-    
-    //         if(event.keyCode == 40){
-    //             move(id, x[0], x[1] + 30);
-    //         }
-    
-    //         verify(id, x);
 
-    //         console.log(event);
-    //     });
-    // });
+
+    // setInterval(function(){
+    //     powerPulse();
+    // },500);
 
     var keyEnabledArray = Array(222).fill(true);
 
@@ -42,13 +17,14 @@ $(document).ready(function(){
 
             let c1 = getPos(1);
             let c2 = getPos(2);
+            let speed = 20;
 
             if(event.keyCode == 39 && c1[0] < 480){ //code for arrowRight
-                verify(1, c1[0] + 20, c1[1]);
+                verify(1, c1[0] + speed, c1[1]);
             }
 
             if(event.keyCode == 37 && c1[0] >= 20){ //code for arrowLeft
-                verify(1, c1[0] - 20, c1[1]);
+                verify(1, c1[0] - speed, c1[1]);
             }
 
             if(event.keyCode == 38){ //code for arrowUp
@@ -60,11 +36,11 @@ $(document).ready(function(){
             }
 
             if(event.keyCode == 68 && c2[0] < 480){ //code for D
-                verify(2, c2[0] + 20, c2[1]);
+                verify(2, c2[0] + speed, c2[1]);
             }
 
             if(event.keyCode == 65 && c2[0] >= 20){ //code for A
-                verify(2, c2[0] - 20, c2[1]);
+                verify(2, c2[0] - speed, c2[1]);
             }
 
             if(event.keyCode == 87){ //code for W
@@ -131,14 +107,9 @@ function verify(id, x, y){
     let other = getPos(idOther);
 
     if(Math.abs(x - other[0]) < 20 && Math.abs(y - other[1]) < 30){
-        // $('#caixa').css('background','#ffd4d4');
-        // setTimeout(function(){
-            // $('#caixa').css('background','#fbfbfb');
-        // },100);
         //nao movimenta
     }else{
         move(id, x, y, false);
-        // $('#caixa').css('background','#fbfbfb');
     }
 }
 
@@ -177,4 +148,10 @@ function novoJogo(){
     $('#score1').text(0);
     $('#score2').text(0);
     $('#caixa').focus();
+}
+
+function powerPulse(){
+    let power = $('#power')[0];
+
+    power.style.transform = 'translateX(246px) translateY(-20px)';
 }

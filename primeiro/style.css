@@ -60,6 +60,38 @@ body{
     display: none;
 }
 
+@keyframes pulsePower {
+    0%   {background-color: rgb(50, 120, 211);}
+    25%  {background-color: rgb(86, 201, 255);}
+    50%  {background-color: rgb(50, 120, 211);}
+    74%  {background-color: rgb(86, 201, 255);}
+    100% {background-color: rgb(50, 120, 211);}
+}
+
+@keyframes blink {
+    0%   {width: 10px;height: 10px;margin-top: 0px; margin-left: 0px}
+    100% {width: 0px;height: 0px;margin-top: 5px;margin-left: 5px}
+}
+
+.power{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: 0.5s ease;
+    background-color: rgb(50, 120, 211);
+}
+
+.power.pulse{
+    animation: pulsePower infinite;
+    animation-duration: 2s;
+}
+
+.power.blink{
+    background: transparent;
+    animation: blink;
+    animation-duration: 0.5s;
+}
+
 .placar-box{
     margin-top: 10px;
 }

@@ -1,0 +1,50 @@
+body{
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#caixa {
+    display: flex;
+    transition: 0.2s ease;
+    background: #616161;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    outline: none;
+}
+
+.char {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    top: 0px;
+    left: 0px;
+    position: relative;
+    transition: 0.2s linear;
+}
+
+@keyframes pulsePower {
+    0%   {background-color: rgb(50, 120, 211);}
+    25%  {background-color: rgb(86, 201, 255);}
+    50%  {background-color: rgb(50, 120, 211);}
+    74%  {background-color: rgb(86, 201, 255);}
+    100% {background-color: rgb(50, 120, 211);}
+}
+
+@keyframes blink {
+    0%   {width: 10px;height: 10px;margin-top: 0px; margin-left: 0px}
+    100% {width: 0px;height: 0px;margin-top: 5px;margin-left: 5px}
+}
+
+.versao{
+    position: absolute;
+    bottom: 10px;
+    color: white;
+}

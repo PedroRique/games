@@ -116,7 +116,7 @@
 
         <div class="mob" ng-repeat="mob in mobs" ng-style="{'top': mob.y + 'px', 'left': mob.x + 'px'}"></div>
 
-        <div class="abilities-box" ng-if="false">
+        <div class="abilities-box">
             <div class="ability" ng-repeat="ability in abilities"  ng-class="{'cooldown': !ability.status}">
                 <span ng-if="ability.status">{{ability.id}}</span>
                 <span ng-if="!ability.status">{{ability.time}}</span>

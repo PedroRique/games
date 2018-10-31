@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Destaque</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        .canvas{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            outline: none;
+            overflow: hidden;
+        }
+
+        .char{
+            width: 15px;
+            height: 15px;
+            background: black;
+            border-radius: 50%;
+            border: 1px solid black;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: 0.3s ease;
+            z-index: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center
+        }
+
+        .char.dashing{
+            opacity: 0.2;
+        }
+
+        .char .hp{
+            width: 20px;
+            height: 3px;
+            background: #66f266;
+            position: absolute;
+            top: -10px;            
+        }
+
+        .orb{
+            background: black;
+            box-shadow: 0px 0px 10px 0px black;
+            width: 5px;
+            height: 5px;
+            position: absolute;
+            transition: 0.2s linear;
+            border-radius: 50%;            
+        }
+
+        .orb.some{
+            opacity: 0;
+        }
+
+        .abilities-box{
+            position: fixed;
+            bottom: 0;
+            background: #999;
+            padding: 1em;
+            display: flex;
+        }
+
+        .ability{
+            background: #ededed;
+            margin: 0.5em;
+            font-size: 2em;
+            display: flex;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ability.cooldown{
+            opacity: 0.3;
+        }
+
+        .mob{
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url(assets/mob.gif) center center no-repeat;
+            background-size: contain;
+        }
+
+        .animate-if.ng-enter, .animate-if.ng-leave {
+            transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        }
+
+        .animate-if.ng-enter,
+        .animate-if.ng-leave.ng-leave-active {
+            opacity:0;
+        }
+
+        .animate-if.ng-leave,
+        .animate-if.ng-enter.ng-enter-active {
+            opacity:1;
+        }
+
+    </style>
+</head>
+<body ng-app="game" oncontextmenu="return true;">
+    <div class="canvas" ng-controller="canvasCtrl" ng-keydown="getPress($event)" ng-mousemove="getPointerPos($event)" tabindex="0" ng-mousedown="goToLocation($event)">
+        <div class="char" ng-style="{'top': charPos.y + 'px', 'left': charPos.x + 'px'}" ng-class="{'dashing': dashing}">
+            <!-- <div class="hp"></div> -->
+        </div>
+
+        <div class="orb animate-if" ng-repeat="orb in orbs" ng-style="{'top': orb.y + 'px', 'left': orb.x + 'px'}" ng-if="orb.show"></div>
+
+        <div class="mob" ng-repeat="mob in mobs" ng-style="{'top': mob.y + 'px', 'left': mob.x + 'px'}"></div>
+
+        <div class="abilities-box" ng-if="false">
+            <div class="ability" ng-repeat="ability in abilities"  ng-class="{'cooldown': !ability.status}">
+                <span ng-if="ability.status">{{ability.id}}</span>
+                <span ng-if="!ability.status">{{ability.time}}</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('game', []);
+
+        app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope, $timeout, $interval){            
+            $scope.charPos = {x: 0, y: 0};
+            
+            $scope.dashing = false;
+            $scope.walking = false;
+            $scope.walks = [];
+
+            $scope.abilities = [
+                {status: true,cd: 0.1,id: 'Q',time: 0},
+                {status: true,cd: 5,id: 'W',time: 5}
+            ];
+
+            $scope.mobs = [];
+            $scope.orbs = [];
+
+            $scope.goToLocation = function(e){
+                $scope.cancelWalk();
+                $scope.walk([$scope.charPos.x,$scope.charPos.y], [e.pageX, e.pageY], 20);
+            }
+            
+            $scope.getPress = function(e){
+                $scope.ability(e.key);
+            }
+
+            $scope.getPointerPos = function(e){
+                $scope.x = e.clientX;
+		        $scope.y = e.clientY;
+            }
+
+            $scope.ability = function(key){
+
+                if(key == 'q' && $scope.abilities[0].status){
+                    var orb = {x: $scope.charPos.x,y: $scope.charPos.y, show: true};
+                    $scope.orbs.push(orb);
+                    $scope.shoot(orb, 10);
+                    $scope.setCoolDown(0);
+
+                }
+
+                if(key == 'w' && $scope.abilities[1].status){
+                    $scope.dashing = true;
+                    $scope.charPos = {x: $scope.x, y: $scope.y};
+                    $scope.setCoolDown(1);
+                    $timeout(function(){
+                        $scope.dashing = false;
+                    },250);
+                }
+
+            }
+            $scope.shoot = function(orb, precision){
+                var end = [$scope.x, $scope.y];
+                var start = [orb.x, orb.y];
+
+                v = [end[0] - start[0], end[1] - start[1]];
+                vSize = Math.sqrt(Math.pow(v[0], 2) + Math.pow(v[1], 2));
+                vUnit = [v[0]/vSize,v[1]/vSize]
+                vector = [vUnit[0] * precision, vUnit[1] * precision];
+
+                $scope.shootStep(orb, vector[0], vector[1]);
+            }
+
+            $scope.shootStep = function(orb, x, y){
+                
+                var shootInterval = $interval(function(){
+                    
+                    if(orb.x + x > window.innerWidth || orb.y + y > window.innerHeight || orb.x + x < 0 || orb.y + y < 0){
+                        $timeout(function(){
+                            orb.show = false;
+                        },2000);
+                        $interval.cancel(shootInterval);
+                    }else{
+                        orb.x = orb.x + x;
+                        orb.y = orb.y + y;
+
+                        var miss = true;
+
+                        $scope.mobs.forEach(function(mob, i, mobs){
+                            if((mob.x < orb.x && orb.x < mob.x + 50) && (mob.y < orb.y && orb.y < mob.y + 50)){
+                                // mob.dead = true;
+                                mobs.splice(i, 1);
+                                orb.show = false;
+                                miss = false;
+                                $interval.cancel(shootInterval);
+                            }
+                        });
+
+                        if(miss){
+                            $scope.shootStep(orb, x, y);
+                        }
+                        // $timeout(function(){
+                        
+                        // })
+                        
+                    }
+                }, 10);
+                
+            }
+
+            $scope.setCoolDown = function(key){
+                $scope.abilities[key].status = false;
+                var time = $scope.abilities[key].time;
+
+                $timeout(function(){
+                    $scope.abilities[key].status = true;
+                    $interval.cancel(interval);
+                    $scope.abilities[key].time = time;
+                }, $scope.abilities[key].cd * 1000);
+
+                var interval = $interval(function(){
+                    $scope.abilities[key].time = $scope.abilities[key].time - 1;
+                }, 1000)
+            }
+
+            $scope.walk = function(start, end, speed){
+                
+                v = [end[0] - start[0], end[1] - start[1]];
+                vSize = Math.sqrt(Math.pow(v[0], 2) + Math.pow(v[1], 2));
+                vUnit = [v[0]/vSize,v[1]/vSize];
+                vector = [vUnit[0] * speed, vUnit[1] * speed];
+
+                $scope.step(start, end, vector);
+            }
+
+            $scope.step = function(start, end, vector){
+
+                $scope.charPos.x = start[0] + vector[0]; 
+                $scope.charPos.y = start[1] + vector[1];
+                // var walk = $timeout(function(){
+                //     $scope.step([$scope.charPos.x, $scope.charPos.y], end, vector);
+                // }, 150);
+
+                // $scope.walks.push(walk);
+            }
+
+            $scope.cancelWalk = function(){
+                $scope.walks.forEach(function(timeout){
+                    $timeout.cancel(timeout);    
+                });
+            }
+
+            $scope.addMobs = function(n){
+                for (let i = 0; i < n; i++) {
+                    var mobX = Math.random() * window.innerWidth;
+                    var mobY = Math.random() * window.innerHeight;
+                    $scope.mobs.push({x: mobX,y: mobY,id: i, dead: false});
+                }
+            }
+
+            $scope.addMobs(5);
+        }]);
+
+    </script>
+</body>
+</html>
+
+
+<!-- 
+
+                    // var newOrb = angular.element('<div class="orb" style="background:red"></div>');
+                    // newOrb[0].style.top = $scope.charPos.y + 'px';
+                    // newOrb[0].style.left = $scope.charPos.x + 'px';
+                    // $('.canvas').append(newOrb);
+
+                    // var x = $scope.x;
+                    // var y = $scope.y;
+
+                    // $timeout(function(){
+                    //     newOrb[0].style.top = y + 'px';
+                    //     newOrb[0].style.left = x + 'px';
+                    // },0);q
+
+                    // $scope.setCoolDown(0); -->
+
+
+<!-- To Do:
+01) Fazer walk dar mais de um step; ======================== DONE
+01-A) Walk deve parar no ponto final;
+02) Fazer mobs se moverem aleatoriamente;
+03) Rage time: mobs vão em direção ao char;
+04) Habilidade W deve voltar ao ponto (segunda ativação);
+05) Todas as habilidades devem dar dano (ou simplesmente matar a princípio);
+06) Implementar HP no char; ================================ DONE
+06-A) Funcoes perder e ganhar vida;
+07) Implementar Dificuldade;
+08) Fazer ondas de mobs, com a dificuldade aumentando;
+09) Level up do char, podendo comprar itens (escudo, parar o tempo, etc);
+10) Implementar Play/Pause;
+11) Melhorar aparência do char;
+12) Fazer Score;
+13) Guardar Score em um documento interno;
+14) Pensar em um background para o game;
+15) Melhorar aparencia das habilidades;
+16) Desenvolver habilidade E;
+17) Desenvolver habilidade R.
+18) Bug, ao clicar enquanto usa o w cancela a habilidade -->

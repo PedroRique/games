@@ -1,0 +1,22 @@
+To Do:
+01) Fazer walk dar mais de um step; ======================== DONE
+01-A) Walk deve parar no ponto final;
+02) Fazer mobs se moverem aleatoriamente;
+03) Rage time: mobs vão em direção ao char;
+04) Habilidade W deve voltar ao ponto (segunda ativação);
+05) Todas as habilidades devem dar dano (ou simplesmente matar a princípio);
+06) Implementar HP no char; ================================ DONE
+06-A) Funcoes perder e ganhar vida;
+07) Implementar Dificuldade;
+08) Fazer ondas de mobs, com a dificuldade aumentando;
+09) Level up do char, podendo comprar itens (escudo, parar o tempo, etc);
+10) Implementar Play/Pause;
+11) Melhorar aparência do char;
+12) Fazer Score; =========================================== DONE
+13) Guardar Score em um documento interno;
+14) Pensar em um background para o game;
+15) Melhorar aparencia das habilidades;
+16) Desenvolver habilidade E;
+17) Desenvolver habilidade R.
+18) Bug, ao clicar enquanto usa o w cancela a habilidade;
+19) Sound Fx. =============================================== DONE

@@ -15,14 +15,15 @@
             left: 0;
             outline: none;
             overflow: hidden;
+            background: url('assets/bg.png') center center
         }
 
         .char{
             width: 15px;
             height: 15px;
-            background: black;
+            background: white;
             border-radius: 50%;
-            border: 1px solid black;
+            border: 1px solid white;
             position: absolute;
             top: 0;
             left: 0;
@@ -30,7 +31,8 @@
             z-index: 1;
             display: flex;
             align-items: flex-start;
-            justify-content: center
+            justify-content: center;
+            box-shadow: 0px 0px 25px 5px black
         }
 
         .char.dashing{
@@ -46,8 +48,8 @@
         }
 
         .orb{
-            background: black;
-            box-shadow: 0px 0px 10px 0px black;
+            background: red;
+            box-shadow: 0px 0px 10px 0px red;
             width: 5px;
             height: 5px;
             position: absolute;
@@ -82,26 +84,21 @@
             opacity: 0.3;
         }
 
+        .score-box{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-weight: bold;
+            font-size: 2em;
+            color: white
+        }
+
         .mob{
             position: absolute;
             width: 50px;
             height: 50px;
             background: url(assets/mob.gif) center center no-repeat;
             background-size: contain;
-        }
-
-        .animate-if.ng-enter, .animate-if.ng-leave {
-            transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-        }
-
-        .animate-if.ng-enter,
-        .animate-if.ng-leave.ng-leave-active {
-            opacity:0;
-        }
-
-        .animate-if.ng-leave,
-        .animate-if.ng-enter.ng-enter-active {
-            opacity:1;
         }
 
     </style>
@@ -112,10 +109,11 @@
             <!-- <div class="hp"></div> -->
         </div>
 
-        <div class="orb animate-if" ng-repeat="orb in orbs" ng-style="{'top': orb.y + 'px', 'left': orb.x + 'px'}" ng-if="orb.show"></div>
+        <div class="orb" ng-repeat="orb in orbs" id="{{orb.id}}" ng-style="{'top': orb.y + 'px', 'left': orb.x + 'px'}" ng-if="orb.show"></div>
 
-        <div class="mob" ng-repeat="mob in mobs" ng-style="{'top': mob.y + 'px', 'left': mob.x + 'px'}"></div>
+        <div class="mob" ng-repeat="mob in mobs" ng-style="{'top': mob.y + 'px', 'left': mob.x + 'px'}" ng-if="!mob.dead"></div>
 
+        <div class="score-box">{{score}}</div>
         <div class="abilities-box">
             <div class="ability" ng-repeat="ability in abilities"  ng-class="{'cooldown': !ability.status}">
                 <span ng-if="ability.status">{{ability.id}}</span>
@@ -135,7 +133,7 @@
             $scope.dashing = false;
             $scope.walking = false;
             $scope.walks = [];
-
+            $scope.score = 0;
             $scope.abilities = [
                 {status: true,cd: 0.1,id: 'Q',time: 0},
                 {status: true,cd: 5,id: 'W',time: 5}
@@ -143,6 +141,10 @@
 
             $scope.mobs = [];
             $scope.orbs = [];
+
+            $scope.shootSound = new Audio('assets/shoot.mp3');
+            $scope.hitSound = new Audio('assets/hit.mp3');
+            $scope.wSound = new Audio('assets/w.mp3');
 
             $scope.goToLocation = function(e){
                 $scope.cancelWalk();
@@ -161,7 +163,7 @@
             $scope.ability = function(key){
 
                 if(key == 'q' && $scope.abilities[0].status){
-                    var orb = {x: $scope.charPos.x,y: $scope.charPos.y, show: true};
+                    var orb = {x: $scope.charPos.x,y: $scope.charPos.y, show: true, id: $scope.orbs.length};
                     $scope.orbs.push(orb);
                     $scope.shoot(orb, 10);
                     $scope.setCoolDown(0);
@@ -171,6 +173,7 @@
                 if(key == 'w' && $scope.abilities[1].status){
                     $scope.dashing = true;
                     $scope.charPos = {x: $scope.x, y: $scope.y};
+                    $scope.wSound.play();
                     $scope.setCoolDown(1);
                     $timeout(function(){
                         $scope.dashing = false;
@@ -187,43 +190,64 @@
                 vUnit = [v[0]/vSize,v[1]/vSize]
                 vector = [vUnit[0] * precision, vUnit[1] * precision];
 
-                $scope.shootStep(orb, vector[0], vector[1]);
+                $scope.shootStep(orb, vector[0], vector[1], 0);
             }
 
-            $scope.shootStep = function(orb, x, y){
-                
-                var shootInterval = $interval(function(){
-                    
-                    if(orb.x + x > window.innerWidth || orb.y + y > window.innerHeight || orb.x + x < 0 || orb.y + y < 0){
-                        $timeout(function(){
-                            orb.show = false;
-                        },2000);
-                        $interval.cancel(shootInterval);
-                    }else{
-                        orb.x = orb.x + x;
-                        orb.y = orb.y + y;
+            $scope.shootStep = function(orb, x, y, stack){
+                $timeout(function(){
+                    orb.show = false;
+                },2000);
+                $scope.shootSound.play();
 
+                if(orb.x + x > window.innerWidth || orb.y + y > window.innerHeight || orb.x + x < 0 || orb.y + y < 0){
+                    
+                }else{
+                    orb.x = orb.x + x;
+                    orb.y = orb.y + y;
+                    if(stack == 0){
+                        $timeout(function(){
+                            var miss = true;
+
+                            $scope.mobs.forEach(function(mob, i, mobs){
+                                if((mob.x < orb.x && orb.x < mob.x + 50) && (mob.y < orb.y && orb.y < mob.y + 50) && !mob.dead){
+                                    $timeout(function(){
+                                        $scope.hitSound.play();
+                                        mob.dead = true;
+                                        $scope.score += 50;
+                                        $scope.mobs = mobs.filter(function(a){
+                                            return !a.dead;
+                                        });
+                                    },50)
+                                    miss = false;
+                                }
+                            });
+                            if(miss){
+                                $scope.shootStep(orb, x, y, ++stack);
+                            }
+                        })
+                    }else{
                         var miss = true;
 
                         $scope.mobs.forEach(function(mob, i, mobs){
-                            if((mob.x < orb.x && orb.x < mob.x + 50) && (mob.y < orb.y && orb.y < mob.y + 50)){
-                                // mob.dead = true;
-                                mobs.splice(i, 1);
-                                orb.show = false;
+                            if((mob.x < orb.x && orb.x < mob.x + 50) && (mob.y < orb.y && orb.y < mob.y + 50) && !mob.dead){
+                                $timeout(function(){
+                                    $scope.hitSound.play();
+                                    mob.dead = true;
+                                    $scope.score += 50;
+                                    $scope.mobs = mobs.filter(function(a){
+                                        return !a.dead;
+                                    });
+                                },50)
                                 miss = false;
-                                $interval.cancel(shootInterval);
+                                
                             }
                         });
-
                         if(miss){
-                            $scope.shootStep(orb, x, y);
+                            $scope.shootStep(orb, x, y, ++stack);
                         }
-                        // $timeout(function(){
-                        
-                        // })
-                        
                     }
-                }, 10);
+                    
+                }
                 
             }
 
@@ -317,10 +341,11 @@
 09) Level up do char, podendo comprar itens (escudo, parar o tempo, etc);
 10) Implementar Play/Pause;
 11) Melhorar aparência do char;
-12) Fazer Score;
+12) Fazer Score; =========================================== DONE
 13) Guardar Score em um documento interno;
 14) Pensar em um background para o game;
 15) Melhorar aparencia das habilidades;
 16) Desenvolver habilidade E;
 17) Desenvolver habilidade R.
-18) Bug, ao clicar enquanto usa o w cancela a habilidade -->
+18) Bug, ao clicar enquanto usa o w cancela a habilidade;
+19) Sound Fx. =============================================== DONE -->

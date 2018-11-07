@@ -8,8 +8,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
-<body ng-app="game" oncontextmenu="return false;">
-    <div class="canvas custom" ng-controller="canvasCtrl" ng-keydown="getPress($event)" ng-mousemove="getPointerPos($event)" tabindex="0" ng-mousedown="goToLocation($event)">
+<body ng-app="game" oncontextmenu="return true;">
+    <div class="canvas custom" ng-focus="startGame()" ng-controller="canvasCtrl" ng-keydown="getPress($event)" ng-mousemove="getPointerPos($event)" tabindex="0" ng-mousedown="goToLocation($event)">
         <div class="char" ng-style="{'top': charPos.y + 'px', 'left': charPos.x + 'px'}" ng-class="{'dashing': dashing}"></div>
         <div class="orb" ng-repeat="orb in orbs" id="{{orb.id}}" ng-style="{'top': orb.y + 'px', 'left': orb.x + 'px'}" ng-if="orb.show"></div>
         <div class="mob" ng-repeat="mob in mobs" ng-style="{'top': mob.y + 'px', 'left': mob.x + 'px'}" ng-if="!mob.dead"></div>

@@ -9,13 +9,13 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
     $scope.score = 0;
     $scope.abilities = [
         {status: true,cd: 0.1,id: 'Q',time: 0},
-        {status: true,cd: 5,id: 'W',time: 5}
+        {status: true,cd: 2,id: 'W',time: 2}
     ];
 
     $scope.mobs = [];
     $scope.orbs = [];
 
-    $scope.shootSound = new Audio('assets/sounds/shoot.mp3');
+    $scope.qSound = new Audio('assets/sounds/q.mp3');
     $scope.hitSound = new Audio('assets/sounds/hit.mp3');
     $scope.wSound = new Audio('assets/sounds/w.mp3');
     $scope.winSound = new Audio('assets/sounds/win.mp3');
@@ -23,11 +23,16 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
     $scope.bgSound = new Audio('assets/sounds/bg.mp3');
     $scope.bgSound.volume = 0.2;
     $scope.bgSound.loop = true;
-    $scope.bgSound.play();
+
+    $scope.startGame = function(){
+        $scope.bgSound.play();
+    }
 
     $scope.goToLocation = function(e){
         $scope.cancelWalk();
-        $scope.walk([$scope.charPos.x,$scope.charPos.y], [e.pageX, e.pageY], 20);
+        if(!$scope.dashing){
+            $scope.walk([$scope.charPos.x,$scope.charPos.y], [e.pageX, e.pageY], 20);
+        }
     }
     
     $scope.getPress = function(e){
@@ -76,7 +81,7 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
         $timeout(function(){
             orb.show = false;
         },2000);
-        $scope.shootSound.play();
+        $scope.qSound.play();
 
         if(orb.x + x > window.innerWidth || orb.y + y > window.innerHeight || orb.x + x < 0 || orb.y + y < 0){
             
@@ -191,13 +196,23 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
 
     $scope.moveMobs = function(){
         $scope.mobs.forEach(function(mob){
-            mob.x = mob.x + 50;
-            mob.y = mob.y + 25;
+        
+            var x = $scope.getRandomArbitrary(-1,1) * 25;
+            var y = $scope.getRandomArbitrary(-1,1) * 25;
+
+            if(mob.x + x < window.innerWidth && mob.y + y < window.innerHeight && mob.x + x > 0 && mob.y + y > 0){
+                mob.x = mob.x + x;
+                mob.y = mob.y + y;
+            }
         });
 
         $timeout(function(){
             $scope.moveMobs();
-        }, 1000);
+        }, 500);
+    }
+
+    $scope.getRandomArbitrary = function(min, max) {
+        return Math.random() * (max - min) + min;
     }
 
 

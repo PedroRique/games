@@ -6,7 +6,7 @@
     left: 0;
     outline: none;
     overflow: hidden;
-    background: url('assets/images/bg.png') center center
+    background: url('assets/images/destaque.jpg') center center
 }
 
 .char{
@@ -90,6 +90,7 @@
     height: 50px;
     background: url('assets/images/mob.gif') center center no-repeat;
     background-size: contain;
+    transition: 0.5s linear;
 }
 
 .custom {

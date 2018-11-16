@@ -14,6 +14,7 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
 
     $scope.mobs = [];
     $scope.orbs = [];
+    $scope.mobSpeed = 20;
 
     $scope.qSound = new Audio('assets/sounds/q.mp3');
     $scope.hitSound = new Audio('assets/sounds/hit.mp3');
@@ -197,12 +198,17 @@ app.controller('canvasCtrl', ['$scope', '$timeout', '$interval', function($scope
     $scope.moveMobs = function(){
         $scope.mobs.forEach(function(mob){
         
-            var x = $scope.getRandomArbitrary(-1,1) * 25;
-            var y = $scope.getRandomArbitrary(-1,1) * 25;
+            var x = $scope.getRandomArbitrary(-1,1) * $scope.mobSpeed;
+            var y = $scope.getRandomArbitrary(-1,1) * $scope.mobSpeed;
 
             if(mob.x + x < window.innerWidth && mob.y + y < window.innerHeight && mob.x + x > 0 && mob.y + y > 0){
                 mob.x = mob.x + x;
                 mob.y = mob.y + y;
+                var char = $scope.charPos;
+                if((mob.x < char.x + 10) && (char.x + 10 < mob.x + 50) && (mob.y < char.y + 10) && (char.y < mob.y + 50)){
+                    console.log('tocou');
+                    // alert('Game over');
+                }
             }
         });
 
